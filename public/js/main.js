@@ -1172,7 +1172,7 @@ App.submitCapacityRequest = (e) => {
   $.ajax({
     type: "POST",
     url: '/api/v0/setup_invoice',
-    data: data,
+    data: JSON.stringify(data),
     success: success,
     dataType: 'json',
     contentType: 'application/json'

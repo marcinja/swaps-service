@@ -5,6 +5,7 @@ const findSwapTransaction = require('./find_swap_transaction');
 const getAddressDetails = require('./get_address_details');
 const getInvoiceDetails = require('./get_invoice_details');
 const getPrice = require('./get_price');
+const setupInvoice = require('./setup_invoice');
 
 module.exports = {
   checkSwapStatus,
@@ -14,5 +15,6 @@ module.exports = {
   getAddressDetails,
   getInvoiceDetails,
   getPrice,
+  setupInvoice
 };
 

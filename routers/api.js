@@ -2,6 +2,7 @@ const bodyParser = require('body-parser');
 const {Router} = require('express');
 
 const {checkSwapStatus} = require('./../service');
+const {setupInvoice} = require('./../service');
 const {createSwap} = require('./../service');
 const {findSwapOutpoint} = require('./../service');
 const {getAddressDetails} = require('./../service');
