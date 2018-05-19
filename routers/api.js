@@ -70,8 +70,9 @@ module.exports = ({log}) => {
       payment_hash: params.payment_hash,
       redeem_script: body.redeem_script,
       refund_public_key_hash: body.refund_public_key_hash,
-      swap_key_index: body.swap_key_index,
       timeout_block_height: body.timeout_block_height,
+      public_key: body.public_key,
+      private_key: body.private_key,
     },
     returnJson({log, res}));
   });

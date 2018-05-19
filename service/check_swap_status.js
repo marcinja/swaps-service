@@ -89,31 +89,6 @@ module.exports = (args, cbk) => {
       return cbk();
     }],
 
-    // Pull out the swap keypair from the HD seed
-    serverKeyPair: ['validate', ({}, cbk) => {
-      try {
-        return cbk(null, serverSwapKeyPair({
-          network,
-          index: args.swap_key_index
-        }));
-      } catch (e) {
-        return cbk([500, 'ExpectedValidKeyPair', e]);
-      }
-    }],
-
-    // Derive the swap address
-    swapAddress: ['validate', ({}, cbk) => {
-      try {
-        return cbk(null, swapAddress({
-          destination_public_key: args.destination_public_key,
-          payment_hash: args.payment_hash,
-          refund_public_key_hash: args.refund_public_key_hash,
-          timeout_block_height: args.timeout_block_height,
-        }));
-      } catch (e) {
-        return cbk([500, 'DeriveSwapAddressFailure', e]);
-      }
-    }],
 
     // Derive the swap info from the redeem script
     swapDetails: ['validate', ({}, cbk) => {
@@ -127,9 +102,9 @@ module.exports = (args, cbk) => {
     }],
 
     // Make sure that the destination public key matches a server key
-    checkDestinationPublicKey: ['serverKeyPair', 'swapDetails', (res, cbk) => {
+    checkDestinationPublicKey: ['swapDetails', (res, cbk) => {
       const redeemScriptPublicKey = res.swapDetails.destination_public_key;
-      const serverPublicKey = res.serverKeyPair.public_key;
+      const serverPublicKey = args.public_key;
 
       if (serverPublicKey !== redeemScriptPublicKey) {
         return cbk([403, 'InvalidDestinationKey']);
@@ -193,10 +168,7 @@ module.exports = (args, cbk) => {
 
       try {
         swapUtxo = swapOutput({
-          p2sh_output_script: res.swapAddress.p2sh_output_script,
-          p2sh_p2wsh_output_script: res.swapAddress.p2sh_p2wsh_output_script,
-          transaction: res.findSwapTransaction.transaction,
-          witness_output_script: res.swapAddress.witness_output_script,
+          p2sh_output_script: args.p2sh_output_script,
         });
       } catch (e) {
         return cbk([500, 'ExpectedSwapUtxoDetails', e]);
@@ -216,8 +188,7 @@ module.exports = (args, cbk) => {
       'findSwapTransaction',
       'invoice',
       'remainingConfs',
-      'serverKeyPair',
-      ({findSwapTransaction, invoice, remainingConfs, serverKeyPair}, cbk) =>
+      ({findSwapTransaction, invoice, remainingConfs }, cbk) =>
     {
       // Exit early and abort swap when there are remaining confirmations
       if (!!remainingConfs) {
@@ -227,7 +198,7 @@ module.exports = (args, cbk) => {
       return completeSwapTransaction({
         network,
         invoice: args.invoice,
-        private_key: serverKeyPair.private_key,
+        private_key: args.private_key,
         redeem_script: args.redeem_script,
         transaction: findSwapTransaction.transaction,
       },
