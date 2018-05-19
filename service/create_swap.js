@@ -17,6 +17,7 @@ const timeoutBlockCount = 144;
     currency: <Currency Code String>
     invoice: <Lightning Invoice String>
     refund_address: <Chain Address String>
+    pubkey: <capacity_buyer pubkey>
   }
 
   @returns via cbk
@@ -68,20 +69,6 @@ module.exports = (args, cbk) => {
       return cbk();
     },
 
-    // Determine the HD key index for the swap key
-    swapKeyIndex: ['getBlockchainInfo', ({getBlockchainInfo}, cbk) => {
-      return cbk(null, getBlockchainInfo.current_height);
-    }],
-
-    // Make a temporary server public key to send the swap to
-    serverDestinationKey: ['swapKeyIndex', ({swapKeyIndex}, cbk) => {
-      try {
-        return cbk(null, serverSwapKeyPair({network, index: swapKeyIndex}));
-      } catch (e) {
-        return cbk([500, 'ExpectedValidSwapKeyPair', e]);
-      }
-    }],
-
     // Determine the refund address hash
     refundAddress: ['getAddressDetails', ({getAddressDetails}, cbk) => {
       const details = getAddressDetails;
@@ -105,14 +92,13 @@ module.exports = (args, cbk) => {
     swapAddress: [
       'getInvoiceDetails',
       'refundAddress',
-      'serverDestinationKey',
       'timeoutBlockHeight',
       'validate',
       (res, cbk) =>
     {
       try {
         return cbk(null, swapAddress({
-          destination_public_key: res.serverDestinationKey.public_key,
+          destination_public_key: args.pubkey,
           payment_hash: res.getInvoiceDetails.id,
           refund_public_key_hash: res.refundAddress.public_key_hash,
           timeout_block_height: res.timeoutBlockHeight,
@@ -132,14 +118,13 @@ module.exports = (args, cbk) => {
       'fee',
       'getInvoiceDetails',
       'refundAddress',
-      'serverDestinationKey',
       'swapAddress',
       'swapKeyIndex',
       'timeoutBlockHeight',
       (res, cbk) =>
     {
       return cbk(null, {
-        destination_public_key: res.serverDestinationKey.public_key,
+        destination_public_key: args.pubkey,
         invoice: args.invoice,
         payment_hash: res.getInvoiceDetails.id,
         redeem_script: res.swapAddress.redeem_script,
