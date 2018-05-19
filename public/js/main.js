@@ -663,21 +663,7 @@ App.getSwap = (args, cbk) => {
   return;
 };
 
-/** Init App
-*/
-App.init = args => {
-  $('.create-swap-quote').submit(App.submitCreateSwapQuote);
-  $('.new-swap').click(App.clickedNewSwap);
-  $('.online-refund-details').submit(App.submitOnlineRefundRecovery);
-  $('.pay-to-lightning-invoice').on(App.change_events, App.changedInvoice);
-  $('.refund-address').on(App.change_events, App.changedRefundAddress);
-  $('.sign-with-refund-details').submit(App.submitSignWithRefundDetails);
-  $('.refund-details-script').on(App.change_events, App.changedRefundScript);
-  $('.select-currency').change(App.changedCurrencySelection);
-  $('#use-paper-wallet').change(App.changedRefundPreference);
 
-  return;
-};
 
 /** Make a request
 
@@ -1153,6 +1139,60 @@ App.updatedSwapDetails = ({swap}) => {
   const isReady = (!!hasAddress || !!isPaperRefund) && !!hasInvoiceDetails;
 
   swap.find('.make').toggleClass('disabled', !isReady);
+
+  return;
+};
+
+
+/**
+  Capacity selling
+*/
+
+App.selectCapacitySeller = (e) => {
+  $('.js-capacity-request-form').removeClass('d-none');
+};
+
+
+App.submitCapacityRequest = (e) => {
+  e.preventDefault();
+
+  var buyer_pubkey = $('.js-amount-requested').val().trim();
+  var amount = $('.js-buyer-public-key').val().trim();
+  
+  // submit ajax request to endpoint Marcin is building
+  data = {
+    buyer_pubkey: buyer_pubkey,
+    amount:       amount
+  }
+
+  var success = function(resp) {
+    console.log(resp);
+  }
+
+  $.ajax({
+    type: "POST",
+    url: '/api/v0/setup_invoice',
+    data: data,
+    success: success,
+    dataType: 'json',
+    contentType: 'application/json'
+  });
+};
+
+/** Init App
+*/
+App.init = args => {
+  $('.create-swap-quote').submit(App.submitCreateSwapQuote);
+  $('.new-swap').click(App.clickedNewSwap);
+  $('.online-refund-details').submit(App.submitOnlineRefundRecovery);
+  $('.pay-to-lightning-invoice').on(App.change_events, App.changedInvoice);
+  $('.refund-address').on(App.change_events, App.changedRefundAddress);
+  $('.sign-with-refund-details').submit(App.submitSignWithRefundDetails);
+  $('.refund-details-script').on(App.change_events, App.changedRefundScript);
+  $('.select-currency').change(App.changedCurrencySelection);
+  $('#use-paper-wallet').change(App.changedRefundPreference);
+  $('.js-select-capacity-seller').click(App.selectCapacitySeller);
+  $('.js-capacity-request-form').submit(App.submitCapacityRequest);
 
   return;
 };
