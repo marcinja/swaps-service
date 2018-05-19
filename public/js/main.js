@@ -1165,19 +1165,19 @@ App.submitCapacityRequest = (e) => {
     amount:       amount
   }
 
-  var success = function(resp) {
-    console.log(resp);
-  }
-
   $.ajax({
     type: "POST",
     url: '/api/v0/setup_invoice',
     data: JSON.stringify(data),
-    success: success,
+    success: App.receiveInvoice,
     dataType: 'json',
     contentType: 'application/json'
   });
 };
+
+App.receiveInvoice = (data, err) => {
+
+}
 
 /** Init App
 */
