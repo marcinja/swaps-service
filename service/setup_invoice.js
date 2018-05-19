@@ -67,8 +67,8 @@ module.exports = (args, cbk) => {
                     return createSwap({
                         currency: 'tBTC', // hard-coded to testnet BTC since nothing else is available yet.
                         invoice: createInvoice.invoice,
-                        refund_address: 'mq8a57EyVmzuTUaNPQuoTY9MHg4oWmT52t' // TODO generate refund address for capacity_provider
-
+                        refund_address: 'mq8a57EyVmzuTUaNPQuoTY9MHg4oWmT52t', // TODO generate refund address for capacity_provider
+                        pubkey: args.buyer_pubkey
                     },
                     cbk);
                 }],
