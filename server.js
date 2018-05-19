@@ -39,6 +39,7 @@ app.set('view engine', 'pug')
 app.get('/', ({path}, res) => res.render('index', {path}));
 app.use('/api/v0', apiRouter({log}));
 app.get('/refund', ({path}, res) => res.render('refund', {path}));
+app.get('/capacity', ({path}, res) => res.render('capacity', {path}));
 
 app.listen(port, () => log(`Server listening on port ${port}.`));
 
