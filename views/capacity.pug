@@ -7,4 +7,35 @@ block content
       .col-10
         .heading.mb-4
           h1 ⚡ Lightning Capacity ⚡
-          p.text-muted Get Lightning Capactiy Fast!
+          p.text-muted Get Lightning Capacity Fast!
+
+
+    .row
+      .col
+      .col-10
+      table.table
+        tr
+          th Buy
+          th Capacity Available
+          th Reputation
+          th Fee
+          th Pubkey
+        tr
+          td
+            button.btn.btn-primary.js-select-capacity-seller Buy
+          td 500000 SAT
+          td 9.5
+          td 1%
+          td 02dcdd7e18b80dc7fd51af34e871901c13f574e4b82325dc74c0beeada5771e8e9
+
+    br
+    .row
+      .col
+      .col-10
+        form.form.js-capacity-request-form.d-none
+          div.form-group
+            input.form-control.js-amount-requested(placeholder="Amount Requested (SAT)")
+          div.form-group
+            input.form-control.js-buyer-public-key(placeholder="Public Key")
+          button.btn.btn-lg.btn-primary(type="submit") Request
+
