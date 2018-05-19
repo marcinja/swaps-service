@@ -61,26 +61,24 @@ module.exports = (args, cbk) => {
         // Create on-chain transaction.
         createOnchainTxn: [
             'lnd',
-            'createInvoice'
+            'createInvoice',
             ({lnd, createInvoice}, cbk) =>
                 {
                     return createSwap({
                         currency: 'tBTC', // hard-coded to testnet BTC since nothing else is available yet.
                         invoice: createInvoice.invoice,
-                        refund_address: // TODO generate refund address for capacity_provider
+                        refund_address: 'mq8a57EyVmzuTUaNPQuoTY9MHg4oWmT52t' // TODO generate refund address for capacity_provider
 
                     },
-                                      cbk);
-                }
-        ]
+                    cbk);
+                }],
 
         // NOTE: If capacity_buyer never fulfills the invoice, the capacity_provider should reclaim funds
         // from the onchain transaction.
 
         // Return JSON results.
         results: [
-            'createInvoice'
-            'putOnchainTxnAsSeller'
+            'createInvoice',
             ({createInvoice}, cbk) =>
                 {
                     return cbk(null, {
