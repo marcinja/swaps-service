@@ -75,6 +75,16 @@ module.exports = ({log}) => {
     returnJson({log, res}));
   });
 
+
+    // POST buyer request to get a new invoice.
+    router.post('/setup_invoice', ({body}, res) => {
+        return setupInvoice({
+            amount: body.amount,
+            buyer_pubkey: body.pubkey,
+        },
+        returnJson({log, res}));
+    });
+
   return router;
 };
 
